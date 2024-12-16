@@ -14,7 +14,8 @@ public class Shrine : MonoBehaviour
     [SerializeField] TextMeshProUGUI shrinePrompt;
     [SerializeField] GameObject shrineDescription;
 
-    public bool shrineUsed;
+    private bool shrineUsed;
+    private bool shrineApplied;
 
     private void Awake()
     {
@@ -36,6 +37,12 @@ public class Shrine : MonoBehaviour
             shrineDescription.SetActive(true);
 
             playerMovementScript.canMove = false;
+        }
+
+        if(shrineUsed & !shrineApplied)
+        {
+            playerStats.ShrineUsed();
+            shrineApplied = true;
         }
     }
 

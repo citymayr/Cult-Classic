@@ -6,9 +6,6 @@ using TMPro;
 
 public class PlayerStats : MonoBehaviour
 {
-    [Header("Script References")]
-    [SerializeField] Shrine shrineScript;
-
     [Space]
     [Header("UI Elements")]
     public Image healthBarF;
@@ -32,9 +29,6 @@ public class PlayerStats : MonoBehaviour
         playerHealth = Mathf.Clamp(playerHealth, 0, maxHealth);
 
         UpdateInspoUI();
-
-        if (shrineScript.shrineUsed)
-            ShrineUsed();
 
         if (Input.GetKeyDown(KeyCode.G))
         {
@@ -112,9 +106,10 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    private void ShrineUsed()
+    public void ShrineUsed()
     {
-        playerHealth = 1f;
+        float healthMissing = maxHealth - playerHealth;
+        playerHealth += healthMissing;
         lerpTimer = 0f;
         chipDelay = 0f;
     }
