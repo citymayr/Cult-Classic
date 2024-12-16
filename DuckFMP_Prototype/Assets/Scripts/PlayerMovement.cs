@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private float horizontalVal;
     private int jumpCounter = 0;
 
+    public bool canMove = true;
     private bool crouch = false;
     private bool jump;
     private bool doubleJump;
@@ -40,7 +41,8 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         //Movement control
-        horizontalVal = Input.GetAxisRaw("Horizontal");
+        if(canMove)
+            horizontalVal = Input.GetAxisRaw("Horizontal");
 
         //Jump control
         if (Input.GetButtonDown("Jump"))

@@ -6,58 +6,66 @@ using TMPro;
 
 public class Shrine : MonoBehaviour
 {
-    [Header("UI Elements")]
-    [SerializeField] TextMeshProUGUI shrineToggle;
-    [SerializeField] GameObject shrineDescriptors;
-
-    [Space]
-    [Header("Scripts")]
+    [Header("Script References")]
+    [SerializeField] PlayerMovement playerMovementScript;
     [SerializeField] PlayerStats playerStats;
 
-    private bool shrineUsed;
+    [Header("UI Elements")]
+    [SerializeField] TextMeshProUGUI shrinePrompt;
+    [SerializeField] GameObject shrineDescription;
+
+    public bool shrineUsed;
 
     private void Awake()
     {
-        shrineToggle.enabled = false;
-        shrineDescriptors.SetActive(false);
+        shrinePrompt.enabled = false;
+        shrineDescription.SetActive(false);
     }
 
+    //************************************************//
+    //*              SHRINE INTERACTIONS             *//
+    //************************************************//
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        //Check if the shrine has been used before allowing the player to interact with it,
+        //When interacted with, load up shrine HUD and stop the player from moving
+        if (Input.GetKeyDown(KeyCode.E) & !shrineUsed)
         {
-            shrineToggle.enabled = false;
-            shrineDescriptors.SetActive(true);
-        }
+            shrinePrompt.enabled = false;
 
-        if (shrineUsed)
-        {
-            while (playerStats.playerHealth < playerStats.maxHealth)
-            {
-                playerStats.playerHealth += Time.deltaTime;
-                playerStats.healthBar.fillAmount = Mathf.Lerp(playerStats.playerHealth, playerStats.maxHealth, Time.deltaTime / 3);
-            }
+            shrineDescription.SetActive(true);
+
+            playerMovementScript.canMove = false;
         }
     }
 
+    //Upon clicking the Use Shrine button, get rid of the HUD, make the shrine unusable again and allow the player to move again
     public void UseShrine()
     {
-        shrineDescriptors.SetActive(false);
+        shrineDescription.SetActive(false);
+
+        playerMovementScript.canMove = true;
+
         shrineUsed = true;
     }
+
+    //Exit shrine screen with no effects applied + can move again
     public void DoNotUseShrine()
     {
-        shrineDescriptors.SetActive(false);
+        shrineDescription.SetActive(false);
+
+        playerMovementScript.canMove = true;
     }
 
     //************************************************//
     //*          CHECK FOR PLAYER COLLISION          *//
     //************************************************//
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.name == "Player")
+        if (collision.name == "Player" && !shrineUsed)
         {
-            shrineToggle.enabled = true;
+            shrinePrompt.enabled = true;
         }
     }
 
@@ -65,7 +73,7 @@ public class Shrine : MonoBehaviour
     {
         if (collision.name == "Player")
         {
-            shrineToggle.enabled = false;
+            shrinePrompt.enabled = false;
         }
     }
 }
